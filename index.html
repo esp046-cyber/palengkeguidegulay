@@ -1,0 +1,3224 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palengke Gulay Guide</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        .search-box {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            outline: none;
+        }
+
+        .vegetables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .veg-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .veg-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.25);
+        }
+
+        .veg-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .veg-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .veg-english {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .veg-content {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1em;
+        }
+
+        .fresh-list, .not-fresh-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .fresh-list li, .not-fresh-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .fresh-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .not-fresh-list li:before {
+            content: "✗";
+            position: absolute;
+            left: 0;
+            color: #f44336;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .tip-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .tip-title {
+            font-weight: bold;
+            color: #856404;
+            margin-bottom: 8px;
+        }
+
+        .tip-text {
+            color: #856404;
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .emoji {
+            font-size: 1.3em;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+            opacity: 0.9;
+        }
+
+        .no-results {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🥬 Palengke Gulay Guide 🥕</h1>
+            <p class="subtitle">Gabay sa Pagbili ng Sariwang Gulay para sa mga Baguhan</p>
+        </header>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Hanapin ang gulay... (halimbawa: kamatis, talong, sitaw)">
+        </div>
+
+        <div class="vegetables-grid" id="vegetablesGrid"></div>
+        <div class="no-results" id="noResults" style="display: none;">
+            Walang nakitang gulay. Subukan ang ibang salita!
+        </div>
+
+        <footer>
+            <p>💚 Palaging pumili ng sariwang gulay para sa malusog na pamilya!</p>
+            <p style="font-size: 0.9em; margin-top: 10px;">Tip: Bumili ng gulay sa umaga para sa pinakasariwang prutas at gulay</p>
+        </footer>
+    </div>
+
+    <script>
+        const vegetables = [
+            {
+                name: "Kamatis",
+                english: "Tomato",
+                fresh: [
+                    "Matingkad na pula o depende sa uri (pink, orange)",
+                    "Makintab ang balat",
+                    "Matigas pero bahagyang malambot kapag pinisil",
+                    "Walang gasgas o butas",
+                    "Mabango at may natural na amoy"
+                ],
+                notFresh: [
+                    "May mga itim na batik o mantsa",
+                    "Malambot at parang lumulusong",
+                    "May amag o white spots",
+                    "Kulubot ang balat",
+                    "Walang lasa sa amoy o may masamang amoy"
+                ],
+                tip: "Iwasan ang sobrang hinog kung gagamitin pa after 2-3 days. Piliin ang medyo matigas para tumagal."
+            },
+            {
+                name: "Talong",
+                english: "Eggplant",
+                fresh: [
+                    "Makinis at makintab ang balat",
+                    "Matingkad ang kulay (deep purple)",
+                    "Matigas at firm kapag hinawakan",
+                    "Berde at sariwa ang tangkay",
+                    "Walang soft spots o bruises"
+                ],
+                notFresh: [
+                    "Kulubot o nangingitim ang balat",
+                    "May brown spots o mantsa",
+                    "Malambot at parang sponge",
+                    "Tuyo na ang tangkay",
+                    "May bitter smell"
+                ],
+                tip: "Piliin ang medium-sized talong. Ang masyado malalaki ay maaaring matapang ang lasa at maraming buto."
+            },
+            {
+                name: "Sitaw",
+                english: "String Beans / Long Beans",
+                fresh: [
+                    "Matingkad na berde ang kulay",
+                    "Tuwid at mahaba (hindi baluktot)",
+                    "Crisp at tumutunog kapag binali",
+                    "Walang mantsa o brown spots",
+                    "Smooth ang texture"
+                ],
+                notFresh: [
+                    "Yellowish o nangingitim",
+                    "Malambot at hindi na crisp",
+                    "May batik o brown patches",
+                    "Tuyo na ang dulo",
+                    "Mabilis mabilog na parang tali"
+                ],
+                tip: "Subukan balin ang dulo - dapat tumunog at malinis ang putol. Iwasan ang masyado kapal na sitaw, malamang matigas yan."
+            },
+            {
+                name: "Kangkong",
+                english: "Water Spinach",
+                fresh: [
+                    "Deep green ang mga dahon",
+                    "Tuwid at crisp ang tangkay",
+                    "Walang nangingitim na dahon",
+                    "Basa-basa pa pero hindi soggy",
+                    "Fresh vegetable smell"
+                ],
+                notFresh: [
+                    "Yellowish o brown ang dahon",
+                    "Malambot at lanta ang tangkay",
+                    "May slimy texture",
+                    "May bulok na bahagi",
+                    "Amoy na panis"
+                ],
+                tip: "Mas maganda bumili ng kangkong sa umaga. Pag hapon, malambot na yan. Hugasan agad at i-refrigerate."
+            },
+            {
+                name: "Ampalaya",
+                english: "Bitter Gourd / Bitter Melon",
+                fresh: [
+                    "Berde ang kulay (light o dark green)",
+                    "Matigas ang katawan",
+                    "Makintab ang balat",
+                    "Walang soft spots",
+                    "Firm ang bumps"
+                ],
+                notFresh: [
+                    "Yellowish-orange na ang kulay (sobrang hinog)",
+                    "Malambot kapag pinisil",
+                    "May brown spots",
+                    "Soggy o wet na texture",
+                    "Mabaho na"
+                ],
+                tip: "Ang light green na ampalaya ay less bitter kaysa dark green. Piliin kung ano trip mo!"
+            },
+            {
+                name: "Kalabasa",
+                english: "Squash / Pumpkin",
+                fresh: [
+                    "Mabigat para sa size",
+                    "Walang soft spots o bruises",
+                    "Dry ang balat",
+                    "Buo ang tangkay",
+                    "Tunog hollow kapag kinatok"
+                ],
+                notFresh: [
+                    "May soft or mushy parts",
+                    "May mold sa balat",
+                    "May cracks o open wounds",
+                    "Tuyo at nanliliit na",
+                    "Amoy na bulok"
+                ],
+                tip: "Kung buo, tumatagal ng weeks. Kung hiniwa na, piliin ang orange na laman, hindi pale yellow."
+            },
+            {
+                name: "Sayote",
+                english: "Chayote",
+                fresh: [
+                    "Light green ang kulay",
+                    "Matigas at firm",
+                    "Makinis ang balat",
+                    "Walang brown spots",
+                    "Mabigat para sa size"
+                ],
+                notFresh: [
+                    "Yellowish na ang kulay",
+                    "Malambot at wrinkled",
+                    "May brown o black spots",
+                    "Dry na ang texture",
+                    "Magaan lang ang bigat"
+                ],
+                tip: "Mas tender ang maliit na sayote. Ang malalaki ay maaaring matanda na at tough na."
+            },
+            {
+                name: "Patola",
+                english: "Sponge Gourd / Loofah",
+                fresh: [
+                    "Dark green ang kulay",
+                    "Matigas pa ang katawan",
+                    "Makinis ang balat",
+                    "Walang soft areas",
+                    "Berde pa ang dulo"
+                ],
+                notFresh: [
+                    "Yellowish na ang kulay",
+                    "Malambot kapag pinisil",
+                    "May brown spots",
+                    "Rough na ang balat",
+                    "Tuyo na ang tangkay"
+                ],
+                tip: "Piliin ang medium size - ang sobrang laki ay matigas na at puro buto na."
+            },
+            {
+                name: "Okra",
+                english: "Lady's Finger / Okra",
+                fresh: [
+                    "Bright green ang kulay",
+                    "2-4 inches lang ang haba (finger size)",
+                    "Firm pero bahagyang bendable",
+                    "Walang black spots",
+                    "Fuzzy pa ang texture"
+                ],
+                notFresh: [
+                    "Brownish na ang dulo",
+                    "Masyado matigas (matanda na)",
+                    "May black spots o bruises",
+                    "Dry o shriveled",
+                    "Masyado mahaba (tough na yan)"
+                ],
+                tip: "Ang bata pa lang okra ay less slimy. Iwasan ang mahaba at matigas - matanda na yan at maraming buto."
+            },
+            {
+                name: "Repolyo",
+                english: "Cabbage",
+                fresh: [
+                    "Mabigat para sa size",
+                    "Firm at tightly packed ang dahon",
+                    "Crisp ang dahon",
+                    "Light green o purple (depende sa variety)",
+                    "Walang wilted leaves"
+                ],
+                notFresh: [
+                    "Magaan na lang ang bigat",
+                    "Malambot ang core",
+                    "May brown o yellow na dahon",
+                    "May worm holes",
+                    "Amoy na maasim"
+                ],
+                tip: "Tanggalin ang outer leaves kung may damage. Ang loob, malamang okay pa yan."
+            },
+            {
+                name: "Pechay",
+                english: "Bok Choy / Chinese Cabbage",
+                fresh: [
+                    "Dark green ang dahon",
+                    "White at crisp ang tangkay",
+                    "Tuwid at hindi lanta",
+                    "Walang yellow leaves",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellowish ang dahon",
+                    "Malambot at lanta",
+                    "May slimy spots",
+                    "Brownish na ang tangkay",
+                    "Amoy na bulok"
+                ],
+                tip: "Ang baby pechay ay mas tender. Pag regular size, okay din pero medyo mas matibay ang tangkay."
+            },
+            {
+                name: "Labanos",
+                english: "Radish",
+                fresh: [
+                    "White at makinis ang skin",
+                    "Firm at matigas",
+                    "Fresh green ang tops",
+                    "Walang cracks",
+                    "Mabigat sa kamay"
+                ],
+                notFresh: [
+                    "Soft o spongy na",
+                    "May black spots",
+                    "Wilted na ang tops",
+                    "Wrinkled ang skin",
+                    "Amoy na maasim"
+                ],
+                tip: "Ang maliit hanggang medium size ay mas malambot at sweet. Ang malalaki ay maaaring spicy at pithy."
+            },
+            {
+                name: "Sibuyas",
+                english: "Onion",
+                fresh: [
+                    "Dry ang outer skin",
+                    "Firm kapag pinisil",
+                    "Walang sprouts",
+                    "Heavy para sa size",
+                    "Papery ang skin"
+                ],
+                notFresh: [
+                    "May green shoots na",
+                    "Malambot o mushy",
+                    "Basa ang skin",
+                    "May black mold",
+                    "Amoy na maasim o bulok"
+                ],
+                tip: "Store sa cool, dry place - hindi sa ref. Ang sibuyas sa ref ay mabilis lumambot."
+            },
+            {
+                name: "Bawang",
+                english: "Garlic",
+                fresh: [
+                    "Firm at matigas ang bawat clove",
+                    "Dry ang skin",
+                    "Full ang bulbs, walang nawawala",
+                    "Walang green shoots",
+                    "Mabango"
+                ],
+                notFresh: [
+                    "Malambot ang cloves",
+                    "May green shoots na",
+                    "Kulob ang amoy",
+                    "Yellowish na ang cloves",
+                    "Empty or hollow feeling"
+                ],
+                tip: "Piliin ang mabigat at firm. Iwasan ang may shoots na - bitter na yan at hindi na gaanong mabango."
+            },
+            {
+                name: "Carrots / Karot",
+                english: "Carrot",
+                fresh: [
+                    "Bright orange ang kulay",
+                    "Firm at hindi bendable",
+                    "Smooth ang skin",
+                    "Walang cracks o splits",
+                    "Green pa ang tops kung meron"
+                ],
+                notFresh: [
+                    "Bendable at malambot na",
+                    "May white film sa skin",
+                    "Wrinkled o shriveled",
+                    "Black spots sa top",
+                    "Slimy na texture"
+                ],
+                tip: "Ang may tops pa ay fresher, pero mas mabilis din lumanta. Tanggalin ang tops pag-uwi para tumagal."
+            },
+            {
+                name: "Patatas",
+                english: "Potato",
+                fresh: [
+                    "Firm at matigas",
+                    "Smooth ang skin",
+                    "Walang green patches",
+                    "Walang sprouts",
+                    "Walang soft spots"
+                ],
+                notFresh: [
+                    "May green areas (toxic yan!)",
+                    "May sprouts na",
+                    "Malambot o wrinkled",
+                    "May cuts o bruises",
+                    "Amoy na damp o musty"
+                ],
+                tip: "NEVER kumain ng green na patatas - may toxin yan! Store sa dark place para hindi mag-green."
+            },
+            {
+                name: "Sili",
+                english: "Chili Pepper",
+                fresh: [
+                    "Bright ang kulay (red, green, depende sa type)",
+                    "Firm at crisp",
+                    "Makintab ang skin",
+                    "Walang wrinkles",
+                    "Berde pa ang tangkay"
+                ],
+                notFresh: [
+                    "Wrinkled o shriveled",
+                    "Soft spots",
+                    "Brownish na ang skin",
+                    "Tuyo na ang tangkay",
+                    "Moldy"
+                ],
+                tip: "Ang mas maliit na sili ay usually mas maanghang. Red chilies are riper and mas sweet, green ay mas grassy ang lasa."
+            },
+            {
+                name: "Kamote",
+                english: "Sweet Potato",
+                fresh: [
+                    "Firm at matigas",
+                    "Smooth ang skin",
+                    "Walang soft spots",
+                    "Heavy para sa size",
+                    "Walang sprouts"
+                ],
+                notFresh: [
+                    "Malambot o mushy",
+                    "Shriveled o wrinkled",
+                    "May dark spots o mold",
+                    "May sprouts na",
+                    "Amoy na fermented"
+                ],
+                tip: "Piliin ang medium size - mas even ang luto. Store sa cool dry place, hindi sa ref."
+            },
+            {
+                name: "Mustasa",
+                english: "Mustard Greens",
+                fresh: [
+                    "Dark green ang dahon",
+                    "Crisp at hindi lanta",
+                    "Walang yellow leaves",
+                    "Fresh smell",
+                    "Walang insect damage"
+                ],
+                notFresh: [
+                    "Yellowish ang dahon",
+                    "Wilted at lanta",
+                    "Slimy texture",
+                    "Brown spots",
+                    "Amoy na panis"
+                ],
+                tip: "Mas bitter ang mustasa kaysa pechay. Piliin ang young leaves kung ayaw mo ng masyadong pait."
+            },
+            {
+                name: "Luya",
+                english: "Ginger",
+                fresh: [
+                    "Firm at matigas",
+                    "Smooth, tight skin",
+                    "Light brown ang kulay",
+                    "Mabango kapag scratched",
+                    "Walang mold"
+                ],
+                notFresh: [
+                    "Wrinkled o shriveled",
+                    "Malambot ang texture",
+                    "May green mold",
+                    "Dry o hollow feeling",
+                    "Kulob ang amoy"
+                ],
+                tip: "Ang may thin skin ay young ginger - mas mild ang lasa. Thick skin ay matured - stronger flavor."
+            },
+            {
+                name: "Upo",
+                english: "Bottle Gourd",
+                fresh: [
+                    "Light green ang balat",
+                    "Firm at matigas",
+                    "Makinis ang surface",
+                    "Mabigat para sa size",
+                    "Walang soft spots"
+                ],
+                notFresh: [
+                    "Yellowish na ang kulay",
+                    "Malambot kapag pinisil",
+                    "May brown patches",
+                    "Magaan na lang",
+                    "Tuyo na ang tangkay"
+                ],
+                tip: "Piliin ang medium size - ang maliit ay mas tender, ang sobrang laki ay maaaring pithy na."
+            },
+            {
+                name: "Pipino",
+                english: "Cucumber",
+                fresh: [
+                    "Dark green ang kulay",
+                    "Firm at matigas",
+                    "Makintab ang balat",
+                    "Walang soft ends",
+                    "Straight at uniform"
+                ],
+                notFresh: [
+                    "Yellowish ang kulay",
+                    "Malambot sa dulo",
+                    "Wrinkled ang skin",
+                    "Soggy na texture",
+                    "Bitter smell"
+                ],
+                tip: "Ang makinis na balat ay mas sweet. Ang may bumps ay 'pickling cucumber' - mas crunchy yan."
+            },
+            {
+                name: "Kalabasa Blanca",
+                english: "White Squash / Opo Squash",
+                fresh: [
+                    "White-green ang kulay",
+                    "Firm at matigas",
+                    "Walang brown spots",
+                    "Heavy feeling",
+                    "May white powder sa balat (normal yan)"
+                ],
+                notFresh: [
+                    "Yellowish patches",
+                    "Soft areas",
+                    "Wrinkled skin",
+                    "Magaan na lang",
+                    "May amag"
+                ],
+                tip: "Itong white squash ay mas creamy ang lasa kaysa orange kalabasa. Perfect sa ginisang gulay."
+            },
+            {
+                name: "Talbos ng Kamote",
+                english: "Sweet Potato Leaves",
+                fresh: [
+                    "Bright green ang dahon",
+                    "Crisp ang tangkay",
+                    "Walang yellow leaves",
+                    "Fresh smell",
+                    "Walang insect holes"
+                ],
+                notFresh: [
+                    "Yellowish o brown",
+                    "Wilted at lanta",
+                    "Slimy texture",
+                    "May butas-butas",
+                    "Amoy na panis"
+                ],
+                tip: "Ang young shoots at leaves ay mas malambot. Tanggalin ang matigas na tangkay bago lutuin."
+            },
+            {
+                name: "Malunggay",
+                english: "Moringa / Drumstick Leaves",
+                fresh: [
+                    "Small, bright green leaves",
+                    "Fresh at hindi lanta",
+                    "Walang yellowish leaves",
+                    "Clean smell",
+                    "Attached pa sa stem"
+                ],
+                notFresh: [
+                    "Brown o yellow leaves",
+                    "Wilted completely",
+                    "Nalalaglag na ang dahon",
+                    "Slimy texture",
+                    "Amoy na luma"
+                ],
+                tip: "Mabilis lumanta ang malunggay. Bili lang ng sapat for 1-2 days. Store sa ref wrapped in damp paper towel."
+            },
+            {
+                name: "Sigarilyas",
+                english: "Winged Bean",
+                fresh: [
+                    "Bright green",
+                    "4-sided with frilly edges",
+                    "Crisp kapag binali",
+                    "Walang brown spots",
+                    "Young at hindi matigas"
+                ],
+                notFresh: [
+                    "Brownish na ang edges",
+                    "Tough at matigas na",
+                    "Dry ang texture",
+                    "May dark patches",
+                    "Hindi na tumutunog pag binali"
+                ],
+                tip: "Mas young ang sigarilyas, mas tender. Pag masyado mature na, matigas yan at maraming fiber."
+            },
+            {
+                name: "Puso ng Saging",
+                english: "Banana Blossom / Banana Heart",
+                fresh: [
+                    "Purple-red ang outer leaves",
+                    "Firm at mabigat",
+                    "Tight ang layers",
+                    "Creamy white ang loob",
+                    "Walang black spots"
+                ],
+                notFresh: [
+                    "Brownish na ang layers",
+                    "Loose at tuyo na",
+                    "Black spots sa loob",
+                    "Dry texture",
+                    "Amoy na maasim"
+                ],
+                tip: "Ilagay sa tubig may kaunting asin after cutting para hindi mag-black. Matagal prep time nito!"
+            },
+            {
+                name: "Labanos / Turnip",
+                english: "Turnip",
+                fresh: [
+                    "White at makinis",
+                    "Firm at heavy",
+                    "Purple crown on top",
+                    "Fresh green tops",
+                    "Walang cracks"
+                ],
+                notFresh: [
+                    "Soft o spongy",
+                    "Wrinkled skin",
+                    "Brown spots",
+                    "Wilted tops",
+                    "Hollow feeling"
+                ],
+                tip: "Similar sa labanos pero mas mild ang lasa. Young turnips ay pwedeng raw, mature ay better cooked."
+            },
+            {
+                name: "Singkamas",
+                english: "Jicama / Mexican Turnip",
+                fresh: [
+                    "Light brown, papery skin",
+                    "Firm at matigas",
+                    "Heavy para sa size",
+                    "White, crisp flesh",
+                    "Slightly sweet smell"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled skin",
+                    "Yellowish flesh",
+                    "Dry texture",
+                    "Sour smell"
+                ],
+                tip: "Perfect for salads! Peel agad pag-uwi at ilagay sa tubig sa ref para crispy pa rin after ilang days."
+            },
+            {
+                name: "Pechay Baguio",
+                english: "Napa Cabbage / Chinese Cabbage",
+                fresh: [
+                    "Pale green-yellow leaves",
+                    "Tightly packed",
+                    "Crisp texture",
+                    "Heavy para sa size",
+                    "Walang brown edges"
+                ],
+                notFresh: [
+                    "Brown o black spots",
+                    "Loose leaves",
+                    "Slimy inner leaves",
+                    "Wilted outer leaves",
+                    "Sour smell"
+                ],
+                tip: "Mas sweet ito kaysa regular cabbage. Remove outer leaves kung may damage, ang loob usually okay pa."
+            },
+            {
+                name: "Letsugas",
+                english: "Lettuce",
+                fresh: [
+                    "Bright green (or red depende sa type)",
+                    "Crisp leaves",
+                    "Tightly formed head",
+                    "Walang brown edges",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Brown o rusty edges",
+                    "Wilted leaves",
+                    "Slimy texture",
+                    "Yellowish color",
+                    "Amoy na panis"
+                ],
+                tip: "Store wrapped in paper towel sa ref. Huwag hugasan unless gagamitin na para tumagal."
+            },
+            {
+                name: "Bataw",
+                english: "Hyacinth Bean",
+                fresh: [
+                    "Purple-green pods",
+                    "Flat at medyo soft",
+                    "Young at tender",
+                    "Makinis ang surface",
+                    "Walang strings sa sides"
+                ],
+                notFresh: [
+                    "Brownish na",
+                    "Matigas na pods",
+                    "Bulging seeds (matanda na)",
+                    "Dry texture",
+                    "Tough strings"
+                ],
+                tip: "Piliin ang flat pa - pag lumalaki na ang buto sa loob, matigas na yan. Remove strings sa gilid."
+            },
+            {
+                name: "Kabute / Mushroom",
+                english: "Mushroom",
+                fresh: [
+                    "Firm at dry",
+                    "Closed caps (kung button mushroom)",
+                    "White o cream color",
+                    "Walang dark spots",
+                    "Fresh earthy smell"
+                ],
+                notFresh: [
+                    "Slimy o wet",
+                    "Dark brown spots",
+                    "Wrinkled caps",
+                    "Sour smell",
+                    "Malambot na texture"
+                ],
+                tip: "Huwag hugasan unless gagamitin na. Store sa paper bag sa ref. Bilis kasi lumambot ng kabute!"
+            },
+            {
+                name: "Togue / Bean Sprouts",
+                english: "Mung Bean Sprouts",
+                fresh: [
+                    "White at translucent",
+                    "Crisp texture",
+                    "Fresh smell",
+                    "Walang brown spots",
+                    "Slightly moist pero hindi soggy"
+                ],
+                notFresh: [
+                    "Brownish roots",
+                    "Slimy texture",
+                    "Sour smell",
+                    "Mushy",
+                    "May amag"
+                ],
+                tip: "Pinakamabilis lumason sa lahat ng gulay! Bili lang for same day use. Store sa ref in plastic with holes."
+            },
+            {
+                name: "Kinchay",
+                english: "Chinese Celery",
+                fresh: [
+                    "Dark green leaves",
+                    "Thin, crisp stalks",
+                    "Strong aromatic smell",
+                    "Tuwid ang tangkay",
+                    "Walang yellow leaves"
+                ],
+                notFresh: [
+                    "Yellowish leaves",
+                    "Wilted stalks",
+                    "Brown spots",
+                    "Weak smell",
+                    "Slimy texture"
+                ],
+                tip: "Mas malakas ang lasa nito vs regular celery. Konti lang, pwede na! Store with roots in water sa ref."
+            },
+            {
+                name: "Wansoy / Cilantro",
+                english: "Coriander / Cilantro",
+                fresh: [
+                    "Bright green leaves",
+                    "Strong distinct smell",
+                    "Crisp stems",
+                    "Walang yellow leaves",
+                    "Perky not droopy"
+                ],
+                notFresh: [
+                    "Yellowish o brown",
+                    "Wilted completely",
+                    "Slimy leaves",
+                    "Weak smell",
+                    "Mushy stems"
+                ],
+                tip: "Love it or hate it! Store like kinchay - roots in water, covered with plastic bag, sa ref."
+            },
+            {
+                name: "Dahon ng Sili",
+                english: "Chili Leaves",
+                fresh: [
+                    "Bright green",
+                    "Young tender leaves",
+                    "Crisp stems",
+                    "Walang holes",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellowish leaves",
+                    "Wilted stems",
+                    "Bug-eaten",
+                    "Brown spots",
+                    "Lanta na"
+                ],
+                tip: "Masarap sa tinola! Piliin ang young shoots - ang matanda ay medyo mapait. Usually libre lang sa may nagtatanim."
+            },
+            {
+                name: "Horseradish / Malunggay Pods",
+                english: "Drumstick Pods",
+                fresh: [
+                    "Long green pods",
+                    "Straight at firm",
+                    "Smooth surface",
+                    "Finger-thick",
+                    "Walang brown spots"
+                ],
+                notFresh: [
+                    "Brownish color",
+                    "Wrinkled pods",
+                    "Hollow feeling",
+                    "Dry ends",
+                    "Matigas na texture"
+                ],
+                tip: "Hiwa ng 2-inch pieces para sa sinigang. Sukain ang loob after luto - ang seeds at meat lang kinakain."
+            },
+            {
+                name: "Pako / Fiddlehead Fern",
+                english: "Fiddlehead Fern",
+                fresh: [
+                    "Bright green, curled shoots",
+                    "Firm at crisp",
+                    "Young shoots pa",
+                    "Walang brown parts",
+                    "Fresh forest smell"
+                ],
+                notFresh: [
+                    "Uncurled na (matanda na)",
+                    "Brownish",
+                    "Wilted",
+                    "Slimy texture",
+                    "Off smell"
+                ],
+                tip: "Mas bata ang pako, mas tender. Pag nag-unfurl na, matanda na yan at matigas. Perfect sa salad!"
+            },
+            {
+                name: "Gabi",
+                english: "Taro Root",
+                fresh: [
+                    "Firm at matigas",
+                    "Brown, hairy skin",
+                    "Heavy para sa size",
+                    "Walang soft spots",
+                    "Dry na balat"
+                ],
+                notFresh: [
+                    "Malambot kapag pinisil",
+                    "May mold",
+                    "Shriveled skin",
+                    "Sour smell",
+                    "May green shoots"
+                ],
+                tip: "Mag-gloves pag naghihiwa - nakakati ang raw gabi! Mas maliit, mas creamy. Malalaki ay para sa laing."
+            },
+            {
+                name: "Ube",
+                english: "Purple Yam",
+                fresh: [
+                    "Firm at matigas",
+                    "Brown, rough skin",
+                    "Heavy feeling",
+                    "Walang cuts o cracks",
+                    "Dry surface"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Moldy areas",
+                    "Wrinkled skin",
+                    "Sprouting",
+                    "Off smell"
+                ],
+                tip: "Mahirap piliin dahil covered ng balat. Hawakan - dapat firm at walang soft areas. Mabigat dapat."
+            },
+            {
+                name: "Camote Tops",
+                english: "Sweet Potato Vines",
+                fresh: [
+                    "Purple-green stems",
+                    "Crisp texture",
+                    "Young tender leaves",
+                    "Walang yellow parts",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Wilted completely",
+                    "Brown stems",
+                    "Slimy leaves",
+                    "Yellow leaves",
+                    "Panis na amoy"
+                ],
+                tip: "Piliin ang may purple stems - mas malambot yan. Green stems ay medyo matanda na at matigas."
+            },
+            {
+                name: "Saluyot",
+                english: "Jute Leaves",
+                fresh: [
+                    "Dark green leaves",
+                    "Crisp stems",
+                    "Small to medium leaves",
+                    "Walang holes",
+                    "Fresh vegetable smell"
+                ],
+                notFresh: [
+                    "Yellowish leaves",
+                    "Wilted stems",
+                    "Bug-eaten leaves",
+                    "Slimy texture",
+                    "Brown spots"
+                ],
+                tip: "Nakakadulas pag luto - normal yan! Young leaves ay less slimy. Perfect sa utan bisaya."
+            },
+            {
+                name: "Alugbati",
+                english: "Malabar Spinach / Ceylon Spinach",
+                fresh: [
+                    "Dark green, thick leaves",
+                    "Glossy surface",
+                    "Fleshy stems",
+                    "Crisp texture",
+                    "Walang yellow"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted completely",
+                    "Brown stems",
+                    "Slimy leaves",
+                    "Off smell"
+                ],
+                tip: "May red stem variety at green stem. Pareho lang lasa. Madulas din to pag luto like saluyot."
+            },
+            {
+                name: "Kulitis",
+                english: "Amaranth Leaves",
+                fresh: [
+                    "Green or reddish leaves",
+                    "Tender young shoots",
+                    "Crisp stems",
+                    "Bright color",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Faded color",
+                    "Wilted leaves",
+                    "Brown stems",
+                    "Tough texture",
+                    "Panis smell"
+                ],
+                tip: "Mabilis lumata! Bili for same-day use. Young shoots lang ang piliin - ang matanda ay matigas."
+            },
+            {
+                name: "Parda",
+                english: "Bottle Gourd Shoots",
+                fresh: [
+                    "Light green tendrils",
+                    "Young curly vines",
+                    "Tender texture",
+                    "Walang matigas na parts",
+                    "Fresh green smell"
+                ],
+                notFresh: [
+                    "Brown tendrils",
+                    "Tough stems",
+                    "Wilted",
+                    "Yellowish",
+                    "Dry texture"
+                ],
+                tip: "Ang pinaka-tip dito: young shoots lang! Check kung madaling mabilog - pag tough, matanda na yan."
+            },
+            {
+                name: "Kabatiti",
+                english: "Snake Gourd",
+                fresh: [
+                    "Light green with white stripes",
+                    "Long at flexible",
+                    "Firm pero hindi matigas",
+                    "Smooth skin",
+                    "Walang soft spots"
+                ],
+                notFresh: [
+                    "Orange-yellow color",
+                    "Matigas na texture",
+                    "Wrinkled skin",
+                    "Dry ends",
+                    "Soft areas"
+                ],
+                tip: "Pag nag-orange na, sobrang hinog na - matigas na buto nyan. Piliin ang all-green pa."
+            },
+            {
+                name: "Sibuyas na Mura",
+                english: "Spring Onion / Green Onion",
+                fresh: [
+                    "Bright green tops",
+                    "White firm bottoms",
+                    "Crisp texture",
+                    "Strong onion smell",
+                    "Walang slimy parts"
+                ],
+                notFresh: [
+                    "Yellow or brown tops",
+                    "Slimy white parts",
+                    "Wilted leaves",
+                    "Soggy texture",
+                    "Weak smell"
+                ],
+                tip: "Store with roots in water sa ref para tumagal. Pwede i-regrow sa tubig - yung roots, lagay sa baso."
+            },
+            {
+                name: "Tanglad",
+                english: "Lemongrass",
+                fresh: [
+                    "Pale yellow-green",
+                    "Firm stalks",
+                    "Strong citrus smell",
+                    "Tight layers",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Brownish stalks",
+                    "Dry outer layers",
+                    "Weak smell",
+                    "Crumbly texture",
+                    "Moldy base"
+                ],
+                tip: "Smell is key! Dapat malakas ang amoy. Store sa ref wrapped in damp paper towel. Pwede i-freeze."
+            },
+            {
+                name: "Dahon ng Kamias",
+                english: "Bilimbi Leaves",
+                fresh: [
+                    "Green leaflets",
+                    "Young tender leaves",
+                    "Crisp stems",
+                    "Walang yellow",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Brown spots",
+                    "Dry stems",
+                    "Panis smell"
+                ],
+                tip: "Maasim ang lasa! Konti lang, pwede na sa sinigang. Usually libre lang kung may tanim sa bakuran."
+            },
+            {
+                name: "Talong Itim",
+                english: "Black Eggplant",
+                fresh: [
+                    "Deep purple, almost black",
+                    "Shiny skin",
+                    "Firm texture",
+                    "Green calyx",
+                    "Heavy para sa size"
+                ],
+                notFresh: [
+                    "Brown patches",
+                    "Wrinkled skin",
+                    "Soft spots",
+                    "Dull surface",
+                    "Dry calyx"
+                ],
+                tip: "Ito yung common na talong sa Pinas. Mas maliit kaysa regular eggplant pero same quality checks."
+            },
+            {
+                name: "Talong Berde",
+                english: "Green Eggplant",
+                fresh: [
+                    "Bright light green",
+                    "Round shape",
+                    "Firm at matigas",
+                    "Makintab na balat",
+                    "Fresh green stem"
+                ],
+                notFresh: [
+                    "Yellowish patches",
+                    "Soft when pressed",
+                    "Brown spots",
+                    "Wrinkled",
+                    "Dry stem"
+                ],
+                tip: "Mas matapang ang lasa nito vs regular talong. Popular sa Thai dishes. Maliit lang pero matapang!"
+            },
+            {
+                name: "Kadyos",
+                english: "Pigeon Peas",
+                fresh: [
+                    "Green pods (kung fresh)",
+                    "Plump seeds inside",
+                    "Firm pods",
+                    "Walang worms",
+                    "Clean looking"
+                ],
+                notFresh: [
+                    "Brown dried pods (okay lang kung dried talaga)",
+                    "Hollow pods",
+                    "Bug-eaten",
+                    "Moldy",
+                    "Musty smell"
+                ],
+                tip: "Usually dried ang available. Check for worms! Fresh kadyos ay seasonal lang. Popular sa KBL."
+            },
+            {
+                name: "Munggo",
+                english: "Mung Beans",
+                fresh: [
+                    "Bright green color",
+                    "Uniform size",
+                    "Hard texture",
+                    "No discoloration",
+                    "Clean, no debris"
+                ],
+                notFresh: [
+                    "Dull color",
+                    "Broken beans",
+                    "Bugs present",
+                    "Musty smell",
+                    "Mixed with stones"
+                ],
+                tip: "Check for weevils! Magkakabutas kung may bugs. Store sa airtight container. Wash before cooking."
+            },
+            {
+                name: "Sitaw na Puti",
+                english: "White Beans / Yard Long Beans",
+                fresh: [
+                    "Pale green to whitish",
+                    "Crisp texture",
+                    "Straight pods",
+                    "Walang brown spots",
+                    "Snaps cleanly"
+                ],
+                notFresh: [
+                    "Yellowish color",
+                    "Limp texture",
+                    "Brown patches",
+                    "Dry ends",
+                    "Won't snap"
+                ],
+                tip: "Mas malambot ito kaysa regular sitaw. Less common sa palengke pero mas sweet ang lasa."
+            },
+            {
+                name: "Patani",
+                english: "Lima Beans",
+                fresh: [
+                    "Bright green pods",
+                    "Plump, full pods",
+                    "Smooth surface",
+                    "Heavy feeling",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellowish pods",
+                    "Flat, empty pods",
+                    "Wrinkled skin",
+                    "Light weight",
+                    "Off smell"
+                ],
+                tip: "Feel ang pods - dapat may laman. Young patani ay malambot, mature ay may tough skin na tanggalin."
+            },
+            {
+                name: "Habas",
+                english: "Fava Beans / Broad Beans",
+                fresh: [
+                    "Large green pods",
+                    "Thick, plump pods",
+                    "Velvety texture",
+                    "Heavy para sa size",
+                    "Bright green beans inside"
+                ],
+                notFresh: [
+                    "Black spots on pods",
+                    "Thin, flat pods",
+                    "Brown beans",
+                    "Dry texture",
+                    "Sour smell"
+                ],
+                tip: "Seasonal lang to. Young beans pwede with skin, mature beans ay tanggalin ang thick skin pagkatapos lutuin."
+            },
+            {
+                name: "Sinkamas",
+                english: "Turnip (different from singkamas)",
+                fresh: [
+                    "Purple top, white bottom",
+                    "Smooth skin",
+                    "Firm texture",
+                    "Heavy feeling",
+                    "Fresh green tops if present"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled",
+                    "Brown areas",
+                    "Pithy texture",
+                    "Hollow sound when tapped"
+                ],
+                tip: "Iba ito sa singkamas! Mas pungent ang lasa. Good for pinakbet. Young turnips ay pwedeng raw sa salad."
+            },
+            {
+                name: "Sibuyas Bombay",
+                english: "Red Onion",
+                fresh: [
+                    "Deep red-purple color",
+                    "Dry, papery skin",
+                    "Firm at matigas",
+                    "Heavy para sa size",
+                    "Walang green shoots"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "May tumutubo na green",
+                    "Moldy",
+                    "Wet skin",
+                    "Sour smell"
+                ],
+                tip: "Mas sweet ito kaysa white onion. Perfect raw sa salad. Store sa cool, dry place - hindi sa ref!"
+            },
+            {
+                name: "Repolyo Puti",
+                english: "White Cabbage",
+                fresh: [
+                    "Pale green color",
+                    "Tightly packed",
+                    "Heavy para sa size",
+                    "Crisp leaves",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Loose leaves",
+                    "Yellow or brown",
+                    "Soft core",
+                    "Worm holes",
+                    "Sour smell"
+                ],
+                tip: "Mas common ito kaysa purple cabbage. Check ang gitna - dapat firm. Remove outer leaves kung may damage."
+            },
+            {
+                name: "Repolyo Pula",
+                english: "Red/Purple Cabbage",
+                fresh: [
+                    "Deep purple color",
+                    "Tightly wrapped",
+                    "Heavy feeling",
+                    "Firm leaves",
+                    "Glossy appearance"
+                ],
+                notFresh: [
+                    "Faded color",
+                    "Loose leaves",
+                    "Brown edges",
+                    "Soft spots",
+                    "Wilted outer leaves"
+                ],
+                tip: "Mas mahal pero mas nutritious. Perfect sa coleslaw. Nag-blue sya pag acidic, nag-red pag alkaline - science!"
+            },
+            {
+                name: "Sigarilyas Patani",
+                english: "Winged Bean Seeds",
+                fresh: [
+                    "Young green pods",
+                    "Plump seeds",
+                    "Bright color",
+                    "Smooth pods",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Brown pods",
+                    "Flat/empty",
+                    "Wrinkled",
+                    "Dry texture",
+                    "Off smell"
+                ],
+                tip: "Pwede kainin ang buong pod pag bata pa, o ang seeds lang pag mature na. Check kung may laman."
+            },
+            {
+                name: "Parsley",
+                english: "Parsley",
+                fresh: [
+                    "Bright green leaves",
+                    "Crisp stems",
+                    "Strong herbal smell",
+                    "Perky not wilted",
+                    "Walang yellow"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Limp stems",
+                    "Slimy texture",
+                    "Brown spots",
+                    "Weak smell"
+                ],
+                tip: "May dalawang type: curly at flat (Italian). Flat parsley ay mas malakas ang lasa. Store with stems in water."
+            },
+            {
+                name: "Dill",
+                english: "Dill",
+                fresh: [
+                    "Feathery green leaves",
+                    "Strong aromatic smell",
+                    "Bright color",
+                    "Crisp texture",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Yellowish",
+                    "Wilted",
+                    "Weak smell",
+                    "Brown parts",
+                    "Slimy"
+                ],
+                tip: "Hindi common sa Pinoy dishes pero maganda sa pickles. Store sa ref wrapped in damp paper towel."
+            },
+            {
+                name: "Basil / Balanoy",
+                english: "Sweet Basil",
+                fresh: [
+                    "Bright green leaves",
+                    "Strong sweet smell",
+                    "No dark spots",
+                    "Perky stems",
+                    "Soft leaves"
+                ],
+                notFresh: [
+                    "Black spots",
+                    "Wilted",
+                    "Brown edges",
+                    "Slimy",
+                    "Weak smell"
+                ],
+                tip: "Mabilis lumanta! Best bought fresh, use agad. Store NOT in ref - lagay sa vase with water sa counter."
+            },
+            {
+                name: "Mint / Yerba Buena",
+                english: "Mint",
+                fresh: [
+                    "Bright green",
+                    "Strong minty smell",
+                    "Perky leaves",
+                    "Crisp stems",
+                    "Walang brown"
+                ],
+                notFresh: [
+                    "Brown leaves",
+                    "Wilted",
+                    "Weak smell",
+                    "Slimy texture",
+                    "Yellow patches"
+                ],
+                tip: "Super easy i-grow sa bahay! Lagay sa tubig, mag-roots agad. Use sa drinks, lumpia, or Vietnamese dishes."
+            },
+            {
+                name: "Oregano",
+                english: "Oregano",
+                fresh: [
+                    "Gray-green leaves",
+                    "Strong herbal smell",
+                    "Fuzzy texture",
+                    "Firm stems",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Brown leaves",
+                    "Weak smell",
+                    "Brittle stems",
+                    "Moldy",
+                    "Faded color"
+                ],
+                tip: "Dried oregano ay mas common at mas okay pa nga. Fresh ay rare sa palengke pero pwede i-grow sa bahay."
+            },
+            {
+                name: "Rosemary",
+                english: "Rosemary",
+                fresh: [
+                    "Dark green needle-like leaves",
+                    "Strong pine smell",
+                    "Woody stems",
+                    "Firm texture",
+                    "Aromatic"
+                ],
+                notFresh: [
+                    "Brown needles",
+                    "Dry branches",
+                    "Weak smell",
+                    "Brittle",
+                    "Falling needles"
+                ],
+                tip: "Hindi common sa Filipino cooking pero maganda sa roasted meats. Tumatagal ng weeks sa ref."
+            },
+            {
+                name: "Sibuyas Tagalog",
+                english: "Shallots",
+                fresh: [
+                    "Reddish-brown skin",
+                    "Firm at matigas",
+                    "Dry papery skin",
+                    "Small, elongated bulbs",
+                    "Walang green shoots"
+                ],
+                notFresh: [
+                    "Soft when pressed",
+                    "Sprouting green",
+                    "Moldy skin",
+                    "Wet texture",
+                    "Rotten smell"
+                ],
+                tip: "Mas sweet at mild kaysa regular onion. Essential sa Filipino sawsawan! Store same as regular onions."
+            },
+            {
+                name: "Pechay Tagalog",
+                english: "Baby Bok Choy",
+                fresh: [
+                    "Small, tender leaves",
+                    "Light green",
+                    "White crisp stalks",
+                    "Fresh smell",
+                    "Compact heads"
+                ],
+                notFresh: [
+                    "Yellowish leaves",
+                    "Wilted",
+                    "Brown stalks",
+                    "Slimy",
+                    "Off smell"
+                ],
+                tip: "Mas maliit at tender kaysa regular pechay. Perfect whole sa stir fry. Don't overcook - dapat crisp pa!"
+            },
+            {
+                name: "Bell Pepper Green",
+                english: "Green Bell Pepper",
+                fresh: [
+                    "Bright green",
+                    "Firm at matigas",
+                    "Shiny skin",
+                    "Heavy feeling",
+                    "Fresh green stem"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled skin",
+                    "Brown patches",
+                    "Moldy stem",
+                    "Dull appearance"
+                ],
+                tip: "Green bell pepper is unripe - kaya mas mura. Slightly bitter. Pag hinayaan, magiging red/yellow/orange."
+            },
+            {
+                name: "Bell Pepper Red",
+                english: "Red Bell Pepper",
+                fresh: [
+                    "Bright red color",
+                    "Firm texture",
+                    "Glossy skin",
+                    "Heavy para sa size",
+                    "Green stem"
+                ],
+                notFresh: [
+                    "Soft areas",
+                    "Wrinkled",
+                    "Brown spots",
+                    "Dull skin",
+                    "Moldy"
+                ],
+                tip: "Ripe na kaya mas mahal. Sweeter than green. Rich in Vitamin C. Same ng yellow at orange - lahat ripe na."
+            },
+            {
+                name: "Chili Labuyo",
+                english: "Bird's Eye Chili",
+                fresh: [
+                    "Bright color (green or red)",
+                    "Small, pointed",
+                    "Firm texture",
+                    "Shiny skin",
+                    "Fresh stem"
+                ],
+                notFresh: [
+                    "Wrinkled",
+                    "Soft spots",
+                    "Brown color",
+                    "Moldy",
+                    "Dry stem"
+                ],
+                tip: "Sobrang anghang! Small but terrible. Green ay medyo less spicy, red ay full power. Handle with care!"
+            },
+            {
+                name: "Habanero",
+                english: "Habanero Pepper",
+                fresh: [
+                    "Orange or red color",
+                    "Lantern shape",
+                    "Firm at shiny",
+                    "Smooth skin",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Wrinkled skin",
+                    "Soft texture",
+                    "Brown spots",
+                    "Moldy",
+                    "Dull color"
+                ],
+                tip: "MAS ANGHANG PA SA LABUYO! Fruity flavor pero super init. Use gloves pag hinihiwa. Hindi common sa palengke."
+            },
+            {
+                name: "Jalapeño",
+                english: "Jalapeño Pepper",
+                fresh: [
+                    "Dark green (or red pag mature)",
+                    "2-3 inches long",
+                    "Firm texture",
+                    "Smooth skin",
+                    "Fresh stem"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled",
+                    "Brown patches",
+                    "Moldy",
+                    "Dry texture"
+                ],
+                tip: "Medium spicy lang - hindi kasing anghang ng labuyo. May white lines sa skin = mas maanghang yan."
+            },
+            {
+                name: "Chayote Shoots",
+                english: "Chayote Shoots/Tendrils",
+                fresh: [
+                    "Light green color",
+                    "Young tender vines",
+                    "Curly tendrils",
+                    "Crisp texture",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Brown vines",
+                    "Tough stems",
+                    "Wilted",
+                    "Yellow color",
+                    "Dry texture"
+                ],
+                tip: "Talbos ng sayote! Young shoots lang piliin - pag matanda, matigas. Perfect sa ginisa or tinola."
+            },
+            {
+                name: "Katuray",
+                english: "Sesbania / Vegetable Hummingbird",
+                fresh: [
+                    "White or pink flowers",
+                    "Slightly curved pods",
+                    "Young tender pods",
+                    "Bright color",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Brown flowers",
+                    "Tough pods",
+                    "Wrinkled",
+                    "Dry texture",
+                    "Off smell"
+                ],
+                tip: "Rare sa Manila pero common sa provinces. Flowers at young pods kinakain. May bitter taste na masarap!"
+            },
+            {
+                name: "Kangkong Talbos",
+                english: "Water Spinach Tips",
+                fresh: [
+                    "Bright green tips",
+                    "Young tender shoots",
+                    "Crisp stems",
+                    "Small leaves",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellowish tips",
+                    "Wilted stems",
+                    "Large tough leaves",
+                    "Brown spots",
+                    "Slimy texture"
+                ],
+                tip: "Ang tip/tops lang ang kunin - mas tender. Iwasan ang malalaking dahon at matigas na tangkay."
+            },
+            {
+                name: "Puso ng Saging Shoots",
+                english: "Banana Pith/Core",
+                fresh: [
+                    "Cream-white color",
+                    "Firm layers",
+                    "Moist but not soggy",
+                    "Clean smell",
+                    "No black spots"
+                ],
+                notFresh: [
+                    "Brownish color",
+                    "Soft mushy",
+                    "Black oxidation",
+                    "Slimy",
+                    "Sour smell"
+                ],
+                tip: "Laborious i-prep pero worth it! Soak sa tubig may kalamansi to prevent browning. Inner parts lang kinakain."
+            },
+            {
+                name: "Talinum",
+                english: "Waterleaf / Philippine Spinach",
+                fresh: [
+                    "Fleshy green leaves",
+                    "Thick succulent stems",
+                    "Bright color",
+                    "Crisp texture",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted stems",
+                    "Brown spots",
+                    "Slimy texture",
+                    "Off smell"
+                ],
+                tip: "May slimy texture pag luto like alugbati. High in protein! Not common pero nutritious. Mabilis maluto."
+            },
+            {
+                name: "Labong",
+                english: "Bamboo Shoots",
+                fresh: [
+                    "Firm at heavy",
+                    "Pale yellow color",
+                    "Tight outer layers",
+                    "Fresh smell",
+                    "No soft spots"
+                ],
+                notFresh: [
+                    "Soft texture",
+                    "Dark brown",
+                    "Loose layers",
+                    "Fermented smell",
+                    "Moldy areas"
+                ],
+                tip: "Fresh labong ay seasonal. More common ang canned. Fresh needs boiling to remove bitter taste. Mahirap prep!"
+            },
+            {
+                name: "Water Chestnuts / Apulid",
+                english: "Water Chestnuts",
+                fresh: [
+                    "Dark brown skin",
+                    "Firm at matigas",
+                    "Heavy feeling",
+                    "White crisp inside",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Soft when pressed",
+                    "Shriveled skin",
+                    "Moldy",
+                    "Yellow inside",
+                    "Musty smell"
+                ],
+                tip: "Rare fresh - mas common ang canned. Peel the dark skin, white crisp flesh inside. Sweet at crunchy!"
+            },
+            {
+                name: "Rabanos",
+                english: "White Radish / Daikon",
+                fresh: [
+                    "White color",
+                    "Firm texture",
+                    "Smooth skin",
+                    "Heavy feeling",
+                    "Fresh green tops"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Pithy texture",
+                    "Brown areas",
+                    "Wrinkled skin",
+                    "Hollow feeling"
+                ],
+                tip: "Long white radish - iba sa red radish. Less spicy, more mild. Good sa pickles at stir-fry."
+            },
+            {
+                name: "Baguio Beans",
+                english: "Green Beans / French Beans",
+                fresh: [
+                    "Bright green color",
+                    "Thin, uniform pods",
+                    "Crisp texture",
+                    "Snaps cleanly",
+                    "No strings"
+                ],
+                notFresh: [
+                    "Yellowish color",
+                    "Limp pods",
+                    "Brown spots",
+                    "Tough strings",
+                    "Won't snap"
+                ],
+                tip: "Mas manipis kaysa sitaw. Called 'Baguio beans' dahil grown sa cold areas. Mas mahal pero tender!"
+            },
+            {
+                name: "Snap Peas",
+                english: "Sugar Snap Peas",
+                fresh: [
+                    "Bright green pods",
+                    "Plump with peas inside",
+                    "Crisp texture",
+                    "Sweet taste raw",
+                    "No brown spots"
+                ],
+                notFresh: [
+                    "Flat empty pods",
+                    "Yellowish color",
+                    "Limp texture",
+                    "Brown patches",
+                    "Tough strings"
+                ],
+                tip: "Pwede kainin buong pod! Sweet at crunchy. Not common sa regular palengke - try supermarket."
+            },
+            {
+                name: "Snow Peas",
+                english: "Snow Peas / Chinese Pea Pods",
+                fresh: [
+                    "Flat green pods",
+                    "Bright color",
+                    "Crisp texture",
+                    "Small peas visible",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellow pods",
+                    "Limp texture",
+                    "Large peas (matanda na)",
+                    "Brown spots",
+                    "Dry appearance"
+                ],
+                tip: "Flat pods, iba sa snap peas. Popular sa Chinese dishes. Quick stir-fry lang - don't overcook!"
+            },
+            {
+                name: "Linga",
+                english: "Sesame Leaves",
+                fresh: [
+                    "Green leaves",
+                    "Fuzzy texture",
+                    "Strong aroma",
+                    "Young tender leaves",
+                    "No holes"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Brown edges",
+                    "Weak smell",
+                    "Bug-eaten"
+                ],
+                tip: "Not commonly eaten sa Pinas pero may health benefits. Leaves ng sesame plant. Strong, distinct flavor."
+            },
+            {
+                name: "Dahon ng Ampalaya",
+                english: "Bitter Gourd Leaves",
+                fresh: [
+                    "Bright green leaves",
+                    "Young tender shoots",
+                    "Crisp stems",
+                    "Fresh smell",
+                    "No yellow leaves"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted stems",
+                    "Brown spots",
+                    "Tough texture",
+                    "Off smell"
+                ],
+                tip: "Di kasing pait ng ampalaya fruit! Ginigisa with garlic. Young leaves lang - mature ay matigas at mapait."
+            },
+            {
+                name: "Patola Leaves",
+                english: "Loofah Leaves",
+                fresh: [
+                    "Green leaves",
+                    "Young tender shoots",
+                    "Soft texture",
+                    "Fresh looking",
+                    "Crisp stems"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Tough stems",
+                    "Brown spots",
+                    "Panis smell"
+                ],
+                tip: "Pwede kainin ang leaves at young shoots! Not common pero sa may tanim, libre lang. Ginigisa lang."
+            },
+            {
+                name: "Kalabasa Leaves",
+                english: "Squash Leaves",
+                fresh: [
+                    "Green leaves",
+                    "Young tender shoots",
+                    "Hairy texture (normal)",
+                    "Fresh smell",
+                    "Soft stems"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Very tough stems",
+                    "Brown patches",
+                    "Bug-eaten"
+                ],
+                tip: "Young shoots ng kalabasa plant. May balahibo pero normal yan. Remove tough stems. Masarap sa tinola!"
+            },
+            {
+                name: "Sitaw Leaves",
+                english: "String Bean Leaves",
+                fresh: [
+                    "Bright green",
+                    "Young tender leaves",
+                    "Soft texture",
+                    "Fresh smell",
+                    "No yellow spots"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Tough",
+                    "Brown spots",
+                    "Off smell"
+                ],
+                tip: "Young leaves ng sitaw plant. Hindi lahat alam na pwede to! Young shoots at leaves lang. Ginisa with garlic."
+            },
+            {
+                name: "Bok Choy",
+                english: "Bok Choy (Large)",
+                fresh: [
+                    "Dark green leaves",
+                    "White thick stalks",
+                    "Crisp texture",
+                    "Fresh smell",
+                    "Heavy feeling"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Brown stalks",
+                    "Wilted",
+                    "Slimy parts",
+                    "Sour smell"
+                ],
+                tip: "Regular size bok choy - mas malaki kaysa pechay tagalog. Cut in half lengthwise for even cooking."
+            },
+            {
+                name: "Chili Leaves",
+                english: "Pepper Leaves",
+                fresh: [
+                    "Green tender leaves",
+                    "Young shoots",
+                    "Crisp stems",
+                    "Fresh smell",
+                    "No wilting"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Tough stems",
+                    "Brown spots",
+                    "Off smell"
+                ],
+                tip: "Different from dahon ng sili - these are from pepper plants. Slightly peppery taste. Rare sa palengke."
+            },
+            {
+                name: "Garlic Chives",
+                english: "Chinese Chives / Garlic Chives",
+                fresh: [
+                    "Flat green leaves",
+                    "Strong garlic smell",
+                    "Firm texture",
+                    "Bright color",
+                    "No yellowing"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Weak smell",
+                    "Slimy",
+                    "Brown tips"
+                ],
+                tip: "Flat leaves unlike regular chives. Strong garlic flavor. Perfect sa dumplings at stir-fry. Store sa ref."
+            },
+            {
+                name: "Baby Corn",
+                english: "Baby Corn",
+                fresh: [
+                    "Pale yellow color",
+                    "Small size",
+                    "Firm texture",
+                    "Husk still green",
+                    "No browning"
+                ],
+                notFresh: [
+                    "Brownish color",
+                    "Soft texture",
+                    "Dry husks",
+                    "Off smell",
+                    "Shriveled"
+                ],
+                tip: "Young corn harvested early. Mas common ang canned pero fresh is better. Whole thing kinakain - cob and all!"
+            },
+            {
+                name: "Mais / Corn",
+                english: "Sweet Corn",
+                fresh: [
+                    "Bright green husks",
+                    "Plump kernels",
+                    "Moist silk",
+                    "Golden yellow kernels",
+                    "Sweet smell"
+                ],
+                notFresh: [
+                    "Dry brown husks",
+                    "Shriveled kernels",
+                    "Dry silk",
+                    "Pale kernels",
+                    "Fermented smell"
+                ],
+                tip: "Press a kernel - dapat may juice na lumabas. Don't remove husk until ready to cook para fresh pa!"
+            },
+            {
+                name: "Bataw Leaves",
+                english: "Hyacinth Bean Leaves",
+                fresh: [
+                    "Green heart-shaped leaves",
+                    "Young tender leaves",
+                    "Fresh looking",
+                    "Soft texture",
+                    "No yellow spots"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Tough texture",
+                    "Brown spots",
+                    "Bug-eaten"
+                ],
+                tip: "Young leaves ng bataw plant. Not common sa palengke pero sa provinces, ginagamit sa gulay dishes."
+            },
+            {
+                name: "Kulitis Pula",
+                english: "Red Amaranth",
+                fresh: [
+                    "Purple-red leaves",
+                    "Young tender shoots",
+                    "Bright color",
+                    "Crisp stems",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Faded color",
+                    "Wilted",
+                    "Brown stems",
+                    "Tough leaves",
+                    "Off smell"
+                ],
+                tip: "Mas colorful kaysa green kulitis. Same nutritional value. Young shoots lang - mabilis lumaki at tumatigas!"
+            },
+            {
+                name: "Chinese Kale / Kailan",
+                english: "Chinese Broccoli / Gai Lan",
+                fresh: [
+                    "Dark blue-green leaves",
+                    "Thick stems",
+                    "Small white flowers okay",
+                    "Firm texture",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Hollow stems",
+                    "Wilted",
+                    "Brown spots",
+                    "Sour smell"
+                ],
+                tip: "Popular sa Chinese restaurants. Stems ay crunchy, leaves slightly bitter. Peel thick stems before cooking."
+            },
+            {
+                name: "Taro Leaves / Gabi Leaves",
+                english: "Taro Leaves",
+                fresh: [
+                    "Large green leaves",
+                    "Intact, no tears",
+                    "Thick veins",
+                    "Fresh looking",
+                    "No yellowing"
+                ],
+                notFresh: [
+                    "Yellow patches",
+                    "Torn leaves",
+                    "Brown veins",
+                    "Wilted",
+                    "Dry edges"
+                ],
+                tip: "For laing! Must cook thoroughly - raw gabi leaves ay nakakati sa throat. Young leaves ay mas tender."
+            },
+            {
+                name: "Ugu / Fluted Pumpkin",
+                english: "Fluted Gourd",
+                fresh: [
+                    "Dark green with ridges",
+                    "Firm texture",
+                    "Medium size",
+                    "Smooth skin",
+                    "Heavy feeling"
+                ],
+                notFresh: [
+                    "Yellowish color",
+                    "Soft spots",
+                    "Wrinkled skin",
+                    "Brown patches",
+                    "Light weight"
+                ],
+                tip: "May ridges unlike regular gourd. Not super common pero available. Young ones ay mas malambot at less bitter."
+            },
+            {
+                name: "Celery",
+                english: "Celery",
+                fresh: [
+                    "Bright green stalks",
+                    "Crisp texture",
+                    "Fresh leaves",
+                    "Strong aroma",
+                    "Firm ribs"
+                ],
+                notFresh: [
+                    "Wilted stalks",
+                    "Yellow leaves",
+                    "Limp texture",
+                    "Brown spots",
+                    "Weak smell"
+                ],
+                tip: "Store upright sa vase with water sa ref. Revive limp celery by soaking sa ice water. Good for sopas!"
+            },
+            {
+                name: "Leeks / Kutsay",
+                english: "Leeks",
+                fresh: [
+                    "White at bottom, green on top",
+                    "Firm stalks",
+                    "Fresh green leaves",
+                    "No yellowing",
+                    "Clean smell"
+                ],
+                notFresh: [
+                    "Slimy white part",
+                    "Yellow leaves",
+                    "Wilted top",
+                    "Brown areas",
+                    "Strong onion smell"
+                ],
+                tip: "Milder than onions. Clean well - may dirt between layers! Use white and light green parts only."
+            },
+            {
+                name: "Fennel",
+                english: "Fennel",
+                fresh: [
+                    "White bulb with green fronds",
+                    "Firm bulb",
+                    "Bright green fronds",
+                    "Sweet anise smell",
+                    "No browning"
+                ],
+                notFresh: [
+                    "Brown bulb",
+                    "Soft texture",
+                    "Wilted fronds",
+                    "Dry appearance",
+                    "Weak smell"
+                ],
+                tip: "Not common sa Pinoy palengke. Anise/licorice flavor. Bulb, stems, and fronds all edible. Try sa specialty stores."
+            },
+            {
+                name: "Arugula / Rocket",
+                english: "Arugula",
+                fresh: [
+                    "Dark green leaves",
+                    "Tender texture",
+                    "Peppery smell",
+                    "No yellow",
+                    "Perky leaves"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Slimy texture",
+                    "Wilted",
+                    "Brown spots",
+                    "Bitter smell"
+                ],
+                tip: "Peppery salad green. Rare sa regular palengke - try supermarkets. Mabilis lumanta, use quickly!"
+            },
+            {
+                name: "Spinach",
+                english: "Spinach",
+                fresh: [
+                    "Dark green leaves",
+                    "Crisp texture",
+                    "Fresh smell",
+                    "No slime",
+                    "Firm stems"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Slimy texture",
+                    "Wilted",
+                    "Brown spots",
+                    "Off smell"
+                ],
+                tip: "Real spinach - iba sa alugbati or pechay. Not super common pero available. Wash well - may dirt sa leaves!"
+            },
+            {
+                name: "Kale",
+                english: "Kale",
+                fresh: [
+                    "Dark green curly leaves",
+                    "Firm texture",
+                    "Fresh smell",
+                    "Thick stems",
+                    "No yellowing"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Brown edges",
+                    "Limp stems",
+                    "Off smell"
+                ],
+                tip: "Superfood! Rare sa regular palengke - try Baguio or specialty stores. Remove thick stems before cooking."
+            },
+            {
+                name: "Swiss Chard",
+                english: "Swiss Chard",
+                fresh: [
+                    "Large green leaves",
+                    "Colorful stems (red, yellow, white)",
+                    "Crisp texture",
+                    "Fresh looking",
+                    "No wilting"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Limp stems",
+                    "Brown spots",
+                    "Slimy texture"
+                ],
+                tip: "Rainbow chard has colorful stems. Not available sa most palengkes. Similar sa spinach in taste."
+            },
+            {
+                name: "Asparagus",
+                english: "Asparagus",
+                fresh: [
+                    "Bright green color",
+                    "Firm straight spears",
+                    "Tight tips",
+                    "Smooth skin",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Limp spears",
+                    "Open tips",
+                    "Wrinkled skin",
+                    "Dry ends",
+                    "Off smell"
+                ],
+                tip: "Very rare sa regular palengke - imported usually. Expensive! Trim woody ends before cooking."
+            },
+            {
+                name: "Zucchini",
+                english: "Zucchini",
+                fresh: [
+                    "Green or yellow",
+                    "Firm texture",
+                    "Shiny skin",
+                    "Small to medium size",
+                    "Heavy feeling"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled skin",
+                    "Large size (overripe)",
+                    "Dull appearance",
+                    "Light weight"
+                ],
+                tip: "Type of summer squash. Not common - try supermarkets. Small ones are better - large ones are watery and seedy."
+            },
+            {
+                name: "Eggplant Chinese",
+                english: "Chinese Eggplant",
+                fresh: [
+                    "Long, thin shape",
+                    "Light purple color",
+                    "Firm texture",
+                    "Smooth skin",
+                    "Green stem"
+                ],
+                notFresh: [
+                    "Wrinkled skin",
+                    "Soft spots",
+                    "Brown patches",
+                    "Dull color",
+                    "Dry stem"
+                ],
+                tip: "Mas mahaba at manipis kaysa regular talong. Less seeds, sweeter. Perfect for stir-fry - no need to peel!"
+            },
+            {
+                name: "Beetroot",
+                english: "Beets",
+                fresh: [
+                    "Deep red-purple color",
+                    "Firm texture",
+                    "Smooth skin",
+                    "Fresh green tops if present",
+                    "Heavy feeling"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled skin",
+                    "Wilted tops",
+                    "Shriveled",
+                    "Light weight"
+                ],
+                tip: "Not common sa palengke. Medyo mahal. Stains everything red! Use gloves. Roast or boil with skin on."
+            },
+            {
+                name: "Radish Microgreens",
+                english: "Radish Sprouts",
+                fresh: [
+                    "Bright green leaves",
+                    "White stems",
+                    "Peppery smell",
+                    "Crisp texture",
+                    "No slime"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Brown stems",
+                    "Slimy",
+                    "Wilted",
+                    "Off smell"
+                ],
+                tip: "Micro version ng labanos! Not sa regular palengke - specialty stores. Use sa salads, garnish. Peppery kick!"
+            },
+            {
+                name: "Broccoli",
+                english: "Broccoli",
+                fresh: [
+                    "Dark green florets",
+                    "Tight compact heads",
+                    "Firm stems",
+                    "No yellowing",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellow or brown florets",
+                    "Loose open florets",
+                    "Soft stems",
+                    "Flowering (yellow flowers)",
+                    "Strong cabbage smell"
+                ],
+                tip: "Common na sa supermarkets. Stems are edible - peel and slice! Don't overcook - dapat may crunch pa."
+            },
+            {
+                name: "Cauliflower",
+                english: "Cauliflower",
+                fresh: [
+                    "White or cream color",
+                    "Tight compact florets",
+                    "Firm head",
+                    "Green leaves around (if present)",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Brown spots on florets",
+                    "Loose florets",
+                    "Soft texture",
+                    "Yellow color",
+                    "Strong smell"
+                ],
+                tip: "Available na sa most supermarkets. May purple at orange varieties din. Similar cooking to broccoli."
+            },
+            {
+                name: "Pechay Wombok",
+                english: "Wombok Cabbage",
+                fresh: [
+                    "Oblong shape",
+                    "Pale green-yellow",
+                    "Tightly wrapped",
+                    "Heavy para sa size",
+                    "Crisp leaves"
+                ],
+                notFresh: [
+                    "Brown spots",
+                    "Loose leaves",
+                    "Soft texture",
+                    "Wilted outer leaves",
+                    "Sour smell"
+                ],
+                tip: "Similar sa pechay Baguio pero bigger. Perfect sa kimchi! Sweet and tender. Common na sa supermarkets."
+            },
+            {
+                name: "Horseradish Root",
+                english: "Horseradish",
+                fresh: [
+                    "Brown, rough skin",
+                    "Firm texture",
+                    "Heavy feeling",
+                    "White flesh inside",
+                    "Pungent smell when cut"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Shriveled",
+                    "Moldy",
+                    "Dry texture",
+                    "Weak smell"
+                ],
+                tip: "Very rare sa palengke! Different from malunggay. Super pungent - grate fresh for wasabi substitute."
+            },
+            {
+                name: "Jicama",
+                english: "Mexican Yam Bean",
+                fresh: [
+                    "Brown papery skin",
+                    "Round shape",
+                    "Firm and hard",
+                    "White crisp flesh",
+                    "Sweet smell"
+                ],
+                notFresh: [
+                    "Soft texture",
+                    "Wrinkled skin",
+                    "Yellow flesh",
+                    "Slimy",
+                    "Fermented smell"
+                ],
+                tip: "Same as Singkamas! Just the English name. Perfect sa lumpia or eaten raw with bagoong."
+            },
+            {
+                name: "Alugbati Pula",
+                english: "Red Malabar Spinach",
+                fresh: [
+                    "Green leaves with red stems",
+                    "Thick fleshy leaves",
+                    "Glossy surface",
+                    "Crisp texture",
+                    "Bright colors"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Brown stems",
+                    "Wilted",
+                    "Slimy texture",
+                    "Off smell"
+                ],
+                tip: "Red stem variety. Same lasa as green pero mas maganda sa plating. Slimy texture pag luto - normal yan!"
+            },
+            {
+                name: "Kalabasa Blanca Leaves",
+                english: "White Squash Leaves",
+                fresh: [
+                    "Green leaves",
+                    "Young tender shoots",
+                    "Hairy (normal)",
+                    "Fresh smell",
+                    "Soft stems"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Tough stems",
+                    "Wilted",
+                    "Brown patches",
+                    "Panis smell"
+                ],
+                tip: "Similar sa regular kalabasa leaves pero from white squash. Young shoots lang. Good sa ginisang gulay."
+            },
+            {
+                name: "Mustasa Pechay",
+                english: "Baby Mustard Greens",
+                fresh: [
+                    "Small green leaves",
+                    "Tender texture",
+                    "Fresh smell",
+                    "Bright color",
+                    "Crisp stems"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Wilted",
+                    "Tough texture",
+                    "Brown spots",
+                    "Off smell"
+                ],
+                tip: "Baby version ng mustasa. Less bitter, more tender. Perfect sa soups at stir-fry."
+            },
+            {
+                name: "Talong na Bilog",
+                english: "Round Eggplant",
+                fresh: [
+                    "Round shape",
+                    "Purple color",
+                    "Firm texture",
+                    "Shiny skin",
+                    "Green calyx"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled",
+                    "Brown patches",
+                    "Dull skin",
+                    "Dry stem"
+                ],
+                tip: "Round variety ng talong. Less common pero available. Good for rellenong talong - easier to stuff!"
+            },
+            {
+                name: "Upo Leaves",
+                english: "Bottle Gourd Leaves",
+                fresh: [
+                    "Green leaves",
+                    "Young shoots",
+                    "Soft texture",
+                    "Fresh smell",
+                    "No yellowing"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Tough texture",
+                    "Wilted",
+                    "Brown spots",
+                    "Off smell"
+                ],
+                tip: "Young leaves at shoots ng upo plant. Not common sa palengke pero sa provinces, ginagamit. Ginisa lang."
+            },
+            {
+                name: "Chayote Fruit Young",
+                english: "Baby Chayote",
+                fresh: [
+                    "Very small size",
+                    "Tender skin",
+                    "Light green",
+                    "Soft spines",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Yellowing",
+                    "Soft texture",
+                    "Brown spots",
+                    "Shriveled",
+                    "Dry"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Tough texture",
+                    "Wilted",
+                    "Brown spots",
+                    "Off smell"
+                ],
+                tip: "Baby sayote - pwede kainin with skin! Mas tender kaysa mature sayote. Seasonal lang available."
+            },
+            {
+                name: "Puso ng Saging na Pula",
+                english: "Red Banana Blossom",
+                fresh: [
+                    "Deep red-purple layers",
+                    "Firm texture",
+                    "Tight layers",
+                    "Cream inside",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Brown layers",
+                    "Soft texture",
+                    "Black spots inside",
+                    "Dry",
+                    "Fermented smell"
+                ],
+                tip: "From red banana variety. Same prep as regular puso ng saging. More colorful pero same lasa."
+            },
+            {
+                name: "Kamatis Cherry",
+                english: "Cherry Tomatoes",
+                fresh: [
+                    "Bright red, yellow, or orange",
+                    "Firm and plump",
+                    "Shiny skin",
+                    "Green stems attached",
+                    "Sweet smell"
+                ],
+                notFresh: [
+                    "Soft and mushy",
+                    "Wrinkled skin",
+                    "Brown spots",
+                    "No stems",
+                    "Fermented smell"
+                ],
+                tip: "Small sweet tomatoes. More expensive pero convenient - no need to slice! Good for salads raw."
+            },
+            {
+                name: "Kamatis Sungay",
+                english: "Roma Tomatoes / Plum Tomatoes",
+                fresh: [
+                    "Oblong shape",
+                    "Deep red color",
+                    "Firm texture",
+                    "Few seeds inside",
+                    "Thick flesh"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Wrinkled",
+                    "Brown patches",
+                    "Moldy",
+                    "Off smell"
+                ],
+                tip: "Elongated tomatoes. Less watery, more meaty. Perfect for sauce and cooking. More expensive than regular."
+            },
+            {
+                name: "Pipino Hapon",
+                english: "Japanese Cucumber",
+                fresh: [
+                    "Long and slender",
+                    "Dark green",
+                    "Thin skin",
+                    "Firm texture",
+                    "Small seeds"
+                ],
+                notFresh: [
+                    "Yellow patches",
+                    "Soft ends",
+                    "Wrinkled",
+                    "Thick skin",
+                    "Large seeds"
+                ],
+                tip: "Thinner and longer than regular cucumber. Less bitter, sweeter. Perfect for salads - no need to peel!"
+            },
+            {
+                name: "Winter Melon / Kundol",
+                english: "Winter Melon",
+                fresh: [
+                    "Large, oblong shape",
+                    "White waxy coating",
+                    "Firm texture",
+                    "Heavy weight",
+                    "Green flesh inside"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Moldy coating",
+                    "Light weight",
+                    "Yellow flesh",
+                    "Fermented smell"
+                ],
+                tip: "Huge melon! Usually sold by slice. White flesh, mild flavor. For soups and stews. Can be candied too!"
+            },
+            {
+                name: "Hairy Gourd / Upo Balbon",
+                english: "Fuzzy Gourd",
+                fresh: [
+                    "Green with fine hairs",
+                    "Firm texture",
+                    "Medium size",
+                    "Fresh looking",
+                    "Heavy feeling"
+                ],
+                notFresh: [
+                    "Yellow color",
+                    "Soft texture",
+                    "Brown spots",
+                    "Light weight",
+                    "Dry hairs"
+                ],
+                tip: "Like upo pero may balahibo! Peel the fuzzy skin before cooking. Same cooking as regular upo."
+            },
+            {
+                name: "Bitter Gourd Chinese",
+                english: "Chinese Bitter Melon",
+                fresh: [
+                    "Light green color",
+                    "Larger, fatter than local",
+                    "Less bumpy",
+                    "Firm texture",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Yellow-orange",
+                    "Soft texture",
+                    "Brown spots",
+                    "Shriveled",
+                    "Off smell"
+                ],
+                tip: "Bigger version ng ampalaya. Less bitter than local variety. Popular sa Chinese restaurants."
+            },
+            {
+                name: "Pako Fern Young",
+                english: "Baby Fiddlehead",
+                fresh: [
+                    "Tightly curled",
+                    "Bright green",
+                    "Very small",
+                    "Tender texture",
+                    "Forest smell"
+                ],
+                notFresh: [
+                    "Uncurling",
+                    "Brown tips",
+                    "Tough texture",
+                    "Wilted",
+                    "Off smell"
+                ],
+                tip: "Baby version ng pako. Super tender! More expensive pero worth it. Perfect sa ensalada - no need to cook!"
+            },
+            {
+                name: "Garlic Scapes",
+                english: "Garlic Shoots / Scapes",
+                fresh: [
+                    "Green curly shoots",
+                    "Firm texture",
+                    "Garlic smell",
+                    "Bright color",
+                    "Tender tips"
+                ],
+                notFresh: [
+                    "Yellow color",
+                    "Limp texture",
+                    "Tough stems",
+                    "Brown tips",
+                    "Weak smell"
+                ],
+                tip: "Shoots ng bawang plant. Rare sa palengke! Mild garlic flavor. Perfect stir-fried or in pesto."
+            },
+            {
+                name: "Edamame",
+                english: "Young Soybeans",
+                fresh: [
+                    "Bright green pods",
+                    "Plump with beans",
+                    "Fuzzy pods",
+                    "Firm texture",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellow pods",
+                    "Flat empty pods",
+                    "Brown patches",
+                    "Tough texture",
+                    "Off smell"
+                ],
+                tip: "Japanese soybeans. Very rare fresh sa palengke - usually frozen sa supermarket. Boil with salt, eat from pod!"
+            },
+            {
+                name: "Mani / Peanuts",
+                english: "Fresh Peanuts",
+                fresh: [
+                    "Beige pods",
+                    "Firm texture",
+                    "Heavy with nuts inside",
+                    "Clean pods",
+                    "Fresh earthy smell"
+                ],
+                notFresh: [
+                    "Moldy pods",
+                    "Empty light pods",
+                    "Musty smell",
+                    "Broken shells",
+                    "Discolored"
+                ],
+                tip: "Fresh peanuts ay seasonal. Boil with salt for 'boiled peanuts'. Check for mold - dapat clean ang pods!"
+            },
+            {
+                name: "Kardis",
+                english: "Heart of Palm",
+                fresh: [
+                    "White to cream color",
+                    "Firm texture",
+                    "Cylindrical shape",
+                    "Moist but not soggy",
+                    "Mild smell"
+                ],
+                notFresh: [
+                    "Brown discoloration",
+                    "Soft mushy",
+                    "Dry texture",
+                    "Sour smell",
+                    "Slimy surface"
+                ],
+                tip: "Puso ng palm tree. Very rare fresh - usually canned. Expensive! Tender and mild flavor. For salads."
+            },
+            {
+                name: "Takway",
+                english: "Sea Grapes / Green Caviar",
+                fresh: [
+                    "Bright green bubbles",
+                    "Firm caviar-like texture",
+                    "Salty smell",
+                    "Plump berries",
+                    "Attached to stems"
+                ],
+                notFresh: [
+                    "Deflated bubbles",
+                    "Brown color",
+                    "Soft mushy",
+                    "Separated from stems",
+                    "Off smell"
+                ],
+                tip: "Seaweed, hindi gulay! But sold sa palengke. Soak in water bago kainin. Popular sa Mindanao. Salty pop!"
+            },
+            {
+                name: "Alugbati Seeds",
+                english: "Malabar Spinach Seeds",
+                fresh: [
+                    "Purple-black berries",
+                    "Plump and juicy",
+                    "Firm texture",
+                    "Sweet smell",
+                    "No mold"
+                ],
+                notFresh: [
+                    "Shriveled berries",
+                    "Dry texture",
+                    "Moldy",
+                    "Brown spots",
+                    "Fermented smell"
+                ],
+                tip: "Edible ang seeds! May natural purple dye. Rarely sold pero pwede harvest from plant. Sweet and juicy."
+            },
+            {
+                name: "Talong Puti",
+                english: "White Eggplant",
+                fresh: [
+                    "Pure white color",
+                    "Firm texture",
+                    "Shiny skin",
+                    "Green calyx",
+                    "Heavy feeling"
+                ],
+                notFresh: [
+                    "Yellow patches",
+                    "Soft spots",
+                    "Brown areas",
+                    "Wrinkled",
+                    "Dry stem"
+                ],
+                tip: "White variety ng talong. Less common pero available. Milder flavor than purple. Beautiful sa dishes!"
+            },
+            {
+                name: "Kamote Ube",
+                english: "Purple Sweet Potato",
+                fresh: [
+                    "Purple skin",
+                    "Firm texture",
+                    "Heavy weight",
+                    "Dry surface",
+                    "No sprouts"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Shriveled",
+                    "Sprouting",
+                    "Moldy",
+                    "Light weight"
+                ],
+                tip: "Purple flesh inside - iba sa Ube (purple yam)! Sweet and nutritious. Perfect for kamote cue and desserts."
+            },
+            {
+                name: "Kamote Kahoy / Cassava",
+                english: "Cassava / Yuca",
+                fresh: [
+                    "Brown waxy skin",
+                    "Firm texture",
+                    "Heavy for size",
+                    "White flesh inside",
+                    "No blue lines inside"
+                ],
+                notFresh: [
+                    "Soft texture",
+                    "Blue lines in flesh (toxic!)",
+                    "Moldy",
+                    "Dry and fibrous",
+                    "Off smell"
+                ],
+                tip: "NEVER eat raw - toxic! Peel at luto agad. Blue lines = throw away! For suman, cassava cake, or boiled."
+            },
+            {
+                name: "Tugui / Arrowroot",
+                english: "Arrowroot",
+                fresh: [
+                    "White starchy root",
+                    "Firm texture",
+                    "Smooth surface",
+                    "Heavy weight",
+                    "Clean appearance"
+                ],
+                notFresh: [
+                    "Soft spots",
+                    "Shriveled",
+                    "Moldy",
+                    "Discolored",
+                    "Light weight"
+                ],
+                tip: "Rare sa palengke! Starchy root. Used for arrowroot powder. Can be boiled or used for starch extraction."
+            },
+            {
+                name: "Kondol",
+                english: "Ash Gourd / Winter Melon",
+                fresh: [
+                    "Large, round/oblong",
+                    "White powdery coating",
+                    "Hard shell",
+                    "Heavy weight",
+                    "Pale flesh inside"
+                ],
+                notFresh: [
+                    "Soft shell",
+                    "No coating",
+                    "Light weight",
+                    "Yellow flesh",
+                    "Moldy"
+                ],
+                tip: "Same as winter melon! For sweets and soups. Huge kaya sold by slice. Can last months whole. Mild flavor."
+            },
+            {
+                name: "Petsay Berde",
+                english: "Green Bok Choy",
+                fresh: [
+                    "All green color",
+                    "Crisp stalks",
+                    "Fresh leaves",
+                    "No yellowing",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Brown stalks",
+                    "Wilted",
+                    "Slimy parts",
+                    "Off smell"
+                ],
+                tip: "Green variety - iba sa white-stalked pechay. Slightly stronger flavor. Perfect sa noodle dishes."
+            },
+            {
+                name: "Lettuce Iceberg",
+                english: "Iceberg Lettuce",
+                fresh: [
+                    "Tight round head",
+                    "Pale green",
+                    "Crisp leaves",
+                    "Heavy weight",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Loose leaves",
+                    "Brown edges",
+                    "Wilted",
+                    "Rusty spots",
+                    "Slimy core"
+                ],
+                tip: "Most common lettuce sa Pinas. Crunchy pero less nutritious. Perfect sa burgers and wraps. Store cold."
+            },
+            {
+                name: "Lettuce Romaine",
+                english: "Romaine Lettuce",
+                fresh: [
+                    "Long green leaves",
+                    "Crisp ribs",
+                    "Dark green outer leaves",
+                    "Fresh smell",
+                    "Firm texture"
+                ],
+                notFresh: [
+                    "Brown edges",
+                    "Wilted leaves",
+                    "Slimy ribs",
+                    "Yellow color",
+                    "Off smell"
+                ],
+                tip: "For Caesar salad! More nutritious than iceberg. Outer leaves darker, inner leaves lighter. Store cold."
+            },
+            {
+                name: "Lettuce Red",
+                english: "Red Leaf Lettuce",
+                fresh: [
+                    "Red-purple edges",
+                    "Green center",
+                    "Tender leaves",
+                    "Fresh looking",
+                    "No wilting"
+                ],
+                notFresh: [
+                    "Brown edges",
+                    "Slimy texture",
+                    "Wilted",
+                    "Faded color",
+                    "Off smell"
+                ],
+                tip: "Prettier than green lettuce! Slightly sweet. Delicate - use quickly. Perfect for fancy salads."
+            },
+            {
+                name: "Endive",
+                english: "Endive",
+                fresh: [
+                    "Pale yellow-green",
+                    "Tight leaves",
+                    "Crisp texture",
+                    "Bitter smell",
+                    "No browning"
+                ],
+                notFresh: [
+                    "Brown edges",
+                    "Loose leaves",
+                    "Wilted",
+                    "Slimy",
+                    "Very bitter"
+                ],
+                tip: "Rare sa palengke! Belgian endive. Slightly bitter. Use raw sa salads or grill. Expensive specialty item."
+            },
+            {
+                name: "Radicchio",
+                english: "Radicchio",
+                fresh: [
+                    "Deep red-purple",
+                    "White veins",
+                    "Tight head",
+                    "Crisp texture",
+                    "Bitter smell"
+                ],
+                notFresh: [
+                    "Brown leaves",
+                    "Wilted",
+                    "Soft texture",
+                    "Faded color",
+                    "Very bitter"
+                ],
+                tip: "Italian chicory. Rare sa Pinas! Beautiful color. Bitter taste. Use raw or grilled. Specialty stores only."
+            },
+            {
+                name: "Brussels Sprouts",
+                english: "Brussels Sprouts",
+                fresh: [
+                    "Bright green",
+                    "Tight small heads",
+                    "Firm texture",
+                    "Attached to stalk if possible",
+                    "Fresh smell"
+                ],
+                notFresh: [
+                    "Yellow leaves",
+                    "Loose leaves",
+                    "Soft texture",
+                    "Black spots",
+                    "Strong cabbage smell"
+                ],
+                tip: "Mini cabbages! Very rare sa palengke. Roast or pan-fry. Don't overcook - dapat may crunch. Specialty item."
+            },
+            {
+                name: "Artichoke",
+                english: "Artichoke",
+                fresh: [
+                    "Green tight leaves",
+                    "Heavy weight",
+                    "Firm texture",
+                    "Squeaks when pressed",
+                    "Fresh looking"
+                ],
+                notFresh: [
+                    "Brown leaves",
+                    "Open leaves",
+                    "Light weight",
+                    "Soft texture",
+                    "Dry appearance"
+                ],
+                tip: "Very rare! Almost never sa palengke - canned lang usually. Expensive. Hearts ang kinakain. Mediterranean dish."
+            },
+            {
+                name: "Leeks Baby",
+                english: "Baby Leeks",
+                fresh: [
+                    "Small size",
+                    "White to light green",
+                    "Tender texture",
+                    "Fresh green tops",
+                    "Clean smell"
+                ],
+                notFresh: [
+                    "Yellow tops",
+                    "Slimy white part",
+                    "Wilted",
+                    "Brown areas",
+                    "Strong smell"
+                ],
+                tip: "Baby version ng leeks. More tender, milder. Very rare. Whole thing pwede kainin unlike regular leeks."
+            },
+            {
+                name: "Scallions / Eskallion",
+                english: "Scallions",
+                fresh: [
+                    "Bright green tops",
+                    "White firm bottoms",
+                    "Crisp texture",
+                    "Fresh onion smell",
+                    "No slime"
+                ],
+                notFresh: [
+                    "Yellow tops",
+                    "Slimy bottom",
+                    "Wilted",
+                    "Brown roots",
+                    "Weak smell"
+                ],
+                tip: "Same as sibuyas na mura/spring onions! Both names used. Perfect garnish. Store in water sa ref para tumagal."
+            }
+        ];
+
+        function renderVegetables(veggies) {
+            const grid = document.getElementById('vegetablesGrid');
+            const noResults = document.getElementById('noResults');
+            
+            grid.innerHTML = '';
+            
+            if (veggies.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noResults.style.display = 'none';
+            
+            veggies.forEach(veg => {
+                const card = document.createElement('div');
+                card.className = 'veg-card';
+                
+                card.innerHTML = `
+                    <div class="veg-header">
+                        <div class="veg-name">${veg.name}</div>
+                        <div class="veg-english">${veg.english}</div>
+                    </div>
+                    <div class="veg-content">
+                        <div class="section">
+                            <div class="section-title">
+                                <span class="emoji">✅</span> Sariwa kung:
+                            </div>
+                            <ul class="fresh-list">
+                                ${veg.fresh.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="section">
+                            <div class="section-title">
+                                <span class="emoji">❌</span> Hindi Na Sariwa kung:
+                            </div>
+                            <ul class="not-fresh-list">
+                                ${veg.notFresh.map(item => `<li>${item}</li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="tip-box">
+                            <div class="tip-title">💡 Tip sa Palengke:</div>
+                            <div class="tip-text">${veg.tip}</div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Wait for page to fully load
+        window.addEventListener('DOMContentLoaded', function() {
+            // Initial render - show all vegetables
+            renderVegetables(vegetables);
+            
+            // Search functionality
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    
+                    if (searchTerm === '') {
+                        // If search is empty, show all vegetables
+                        renderVegetables(vegetables);
+                    } else {
+                        // Filter vegetables based on search term
+                        const filtered = vegetables.filter(function(veg) {
+                            return veg.name.toLowerCase().includes(searchTerm) || 
+                                   veg.english.toLowerCase().includes(searchTerm);
+                        });
+                        renderVegetables(filtered);
+                    }
+                });
+                
+                // Also trigger on keyup for better responsiveness
+                searchInput.addEventListener('keyup', function(e) {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    
+                    if (searchTerm === '') {
+                        renderVegetables(vegetables);
+                    } else {
+                        const filtered = vegetables.filter(function(veg) {
+                            return veg.name.toLowerCase().includes(searchTerm) || 
+                                   veg.english.toLowerCase().includes(searchTerm);
+                        });
+                        renderVegetables(filtered);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
